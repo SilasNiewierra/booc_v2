@@ -138,8 +138,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         color: Theme.of(context).backgroundColor,
                         child: Text(
                           "Oops... I already have an account".toUpperCase(),
-                          style: Theme.of(context).textTheme.headline6.copyWith(
-                              color: ColorService().getLightTextColor()),
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                         padding:
                             EdgeInsets.symmetric(horizontal: 50, vertical: 20),
@@ -168,7 +167,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [],
