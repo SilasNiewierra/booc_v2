@@ -1,12 +1,14 @@
-import 'package:booc/services/authenticate.dart';
-import 'package:booc/views/home.dart';
-import 'package:booc/views/landing.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:booc/root.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:booc/services/authenticate.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MyApp());
 }
 
@@ -21,29 +23,28 @@ class MyApp extends StatelessWidget {
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
-          return Text("Something went wrong with Firebase Init");
+          return Scaffold(
+              body: Text("Something went wrong with Firebase Init"));
         }
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           return MultiProvider(
-            providers: [
-              // Make user stream available
-              StreamProvider<User>.value(value: AuthenticationService().user),
-            ],
+              providers: [
+                // Make user stream available
+                StreamProvider<User>.value(value: AuthenticationService().user),
+              ],
 
-            // All data will be available in this child and descendents
-            child: MaterialApp(
-              title: 'booc',
-              home: Provider.of<User>(context) != null
-                  ? HomePage()
-                  : LandingPage(),
-            ),
-          );
+              // All data will be available in this child and descendents
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'booc',
+                home: Root(),
+              ));
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
-        return Text("Loading Firebase ...");
+        return Scaffold(body: Text("Loading Firebase ..."));
       },
     );
   }
