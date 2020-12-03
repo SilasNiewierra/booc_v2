@@ -15,6 +15,7 @@ class Book {
       this.title});
 
   factory Book.fromFirestore(DocumentSnapshot data) {
+    data = data ?? {};
     return Book(
         author: data['author'] ?? 'Michael Scott',
         category: data['category'] ?? 'Novel',

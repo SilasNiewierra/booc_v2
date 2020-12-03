@@ -1,3 +1,4 @@
+import 'package:booc/models/book_model.dart';
 import 'package:booc/services/authenticate.dart';
 import 'package:booc/services/database.dart';
 import 'package:booc/views/menu.dart';
@@ -6,11 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final AuthenticationService authenticationService =
       new AuthenticationService();
 
-  final DatabaseService _databaseService = new DatabaseService();
+  final DatabaseService _db = new DatabaseService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,38 +51,91 @@ class HomePage extends StatelessWidget {
               color: Colors.red,
               height: 40.0,
             ),
-            RaisedButton(
-              onPressed: () {
-                _databaseService.oneTimeTransfer(user.uid);
-              },
-              child: Text("Transfer"),
+            Container(
+              color: Colors.green,
+              child: CustomRadioButton(
+                defaultSelected: "READ",
+                elevation: 0,
+                enableShape: true,
+                // absoluteZeroSpacing: true,
+                unSelectedColor: Theme.of(context).canvasColor,
+                buttonLables: [
+                  'Read',
+                  'Bucket',
+                  'Explore',
+                ],
+                buttonValues: [
+                  "READ",
+                  "BUCKET",
+                  "EXPLORE",
+                ],
+                buttonTextStyle: ButtonTextStyle(
+                    selectedColor: Colors.white,
+                    unSelectedColor: Colors.black,
+                    textStyle: TextStyle(fontSize: 16)),
+                radioButtonValue: (value) {
+                  print(value);
+                },
+                selectedColor: Theme.of(context).accentColor,
+              ),
             ),
-            CustomRadioButton(
-              defaultSelected: "READ",
-              elevation: 0,
-              enableShape: true,
-              absoluteZeroSpacing: true,
-              unSelectedColor: Theme.of(context).canvasColor,
-              buttonLables: [
-                'Read',
-                'Bucket',
-                'Explore',
-              ],
-              buttonValues: [
-                "READ",
-                "BUCKET",
-                "EXPLORE",
-              ],
-              buttonTextStyle: ButtonTextStyle(
-                  selectedColor: Colors.white,
-                  unSelectedColor: Colors.black,
-                  textStyle: TextStyle(fontSize: 16)),
-              radioButtonValue: (value) {
-                print(value);
-              },
-              selectedColor: Theme.of(context).accentColor,
-            ),
+            StreamBuilder(
+                stream: _db.streamReadBooks(user),
+                builder: (context, AsyncSnapshot<List<Book>> snapshot) {
+                  return Expanded(
+                    child: snapshot.data.length > 0
+                        ? GridView.count(
+                            crossAxisCount: 2,
+                            childAspectRatio: (240 / 390),
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 5,
+                            children: List.generate(
+                              snapshot.data.length,
+                              (index) => _buildBook(snapshot.data[index]),
+                            ),
+                          )
+                        : Container(), // Empty
+                  );
+                })
           ],
         ));
+  }
+
+  Widget _buildBook(Book book) {
+    return Container(
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.network(
+              book.imageUrl,
+              height: 340,
+              width: 240,
+              fit: BoxFit.fill,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      book.title,
+                      style: Theme.of(context).textTheme.headline6,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(book.author,
+                        style: Theme.of(context).textTheme.bodyText2)
+                  ],
+                ),
+              ),
+              IconButton(icon: Icon(Icons.more_vert), onPressed: null)
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
