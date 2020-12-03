@@ -63,6 +63,7 @@ class MyApp extends StatelessWidget {
       accentColor: ColorService().getPrimaryColor(),
       buttonColor: ColorService().getPrimaryColor(),
       backgroundColor: ColorService().getBackgroundColor(),
+      canvasColor: ColorService().getBackgroundColor(),
       textTheme: TextTheme(
         headline1: TextStyle(
             fontSize: height / 15, color: ColorService().getPrimaryColor()),
