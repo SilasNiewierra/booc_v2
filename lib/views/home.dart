@@ -37,7 +37,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildBody(BuildContext context) {
     User user = Provider.of<User>(context);
-    String userName = user.displayName ?? 'Bookworm';
+    String userName = user.displayName == null || user.displayName.length <= 0
+        ? 'Bookworm'
+        : user.displayName;
     return Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
@@ -49,16 +51,12 @@ class _HomePageState extends State<HomePage> {
                 style: Theme.of(context).textTheme.headline5),
             Container(
               color: Colors.red,
+              margin: EdgeInsets.symmetric(vertical: 5.0),
               height: 40.0,
             ),
-            Container(
-              color: Colors.green,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.0),
               child: CustomRadioButton(
-                defaultSelected: "READ",
-                elevation: 0,
-                enableShape: true,
-                // absoluteZeroSpacing: true,
-                unSelectedColor: Theme.of(context).canvasColor,
                 buttonLables: [
                   'Read',
                   'Bucket',
@@ -69,13 +67,18 @@ class _HomePageState extends State<HomePage> {
                   "BUCKET",
                   "EXPLORE",
                 ],
-                buttonTextStyle: ButtonTextStyle(
-                    selectedColor: Colors.white,
-                    unSelectedColor: Colors.black,
-                    textStyle: TextStyle(fontSize: 16)),
                 radioButtonValue: (value) {
                   print(value);
                 },
+                defaultSelected: "READ",
+                elevation: 0,
+                enableShape: true,
+                wrapAlignment: WrapAlignment.spaceAround,
+                buttonTextStyle: ButtonTextStyle(
+                    selectedColor: Colors.white,
+                    unSelectedColor: Colors.black,
+                    textStyle: Theme.of(context).textTheme.subtitle1),
+                unSelectedColor: Theme.of(context).canvasColor,
                 selectedColor: Theme.of(context).accentColor,
               ),
             ),
