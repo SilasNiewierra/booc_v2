@@ -1,6 +1,7 @@
 import 'package:booc/models/book_model.dart';
 import 'package:booc/services/authenticate.dart';
 import 'package:booc/services/database.dart';
+import 'package:booc/views/detail.dart';
 import 'package:booc/views/menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Hi " + userName,
                 style: Theme.of(context).textTheme.headline3),
@@ -105,39 +107,50 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBook(Book book) {
-    return Container(
-      child: Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Image.network(
-              book.imageUrl,
-              height: 340,
-              width: 240,
-              fit: BoxFit.fill,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      book.title,
-                      style: Theme.of(context).textTheme.headline6,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(book.author,
-                        style: Theme.of(context).textTheme.bodyText2)
-                  ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (context) => DetailScreen(bookItem: book)));
+      },
+      child: Container(
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Hero(
+                tag: book.uId,
+                child: Image.network(
+                  book.imageUrl,
+                  height: 340,
+                  width: 240,
+                  fit: BoxFit.fill,
                 ),
               ),
-              IconButton(icon: Icon(Icons.more_vert), onPressed: null)
-            ],
-          ),
-        ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        book.title,
+                        style: Theme.of(context).textTheme.headline6,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(book.author,
+                          style: Theme.of(context).textTheme.bodyText2)
+                    ],
+                  ),
+                ),
+                IconButton(icon: Icon(Icons.more_vert), onPressed: null)
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
