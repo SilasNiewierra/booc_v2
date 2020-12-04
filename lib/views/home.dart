@@ -1,10 +1,12 @@
 import 'package:booc/models/book_model.dart';
 import 'package:booc/models/variables.dart';
 import 'package:booc/services/authenticate.dart';
+import 'package:booc/services/colors.dart';
 import 'package:booc/services/database.dart';
 import 'package:booc/views/book_item.dart';
 import 'package:booc/views/bucket.dart';
 import 'package:booc/views/menu.dart';
+import 'package:booc/views/search_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,30 +24,46 @@ class _HomeScreenState extends State<HomeScreen> {
   ValueNotifier<PageContext> pageContextNotifier =
       new ValueNotifier<PageContext>(PageContext.read);
 
+  String searchQuery = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.menu, color: Theme.of(context).primaryColor),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MenuScreen()));
-            },
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          actions: [
-            IconButton(
-                icon: Icon(Icons.bookmark_border,
-                    color: Theme.of(context).primaryColor),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => BucketScreen()));
-                })
-          ],
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.menu, color: Theme.of(context).primaryColor),
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MenuScreen()));
+          },
         ),
-        body: _buildBody(context));
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        actions: [
+          IconButton(
+              icon: Icon(Icons.bookmark_border,
+                  color: Theme.of(context).primaryColor),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => BucketScreen()));
+              })
+        ],
+      ),
+      body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: _buildBody(context)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _db.updateDocs(Provider.of<User>(context, listen: false));
+        },
+        child: Icon(
+          Icons.add,
+          color: ColorService().getLightTextColor(),
+        ),
+      ),
+    );
   }
 
   Widget _buildBody(BuildContext context) {
@@ -63,40 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: Theme.of(context).textTheme.headline3),
             Text("Check out all the books you've read",
                 style: Theme.of(context).textTheme.headline5),
-            Container(
-              color: Colors.red,
-              margin: EdgeInsets.symmetric(vertical: 5.0),
-              height: 40.0,
-            ),
-            // Padding(
-            //   padding: EdgeInsets.symmetric(vertical: 10.0),
-            //   child: CustomRadioButton(
-            //     buttonLables: [
-            //       'Read',
-            //       'Bucket',
-            //       'For Your',
-            //     ],
-            //     buttonValues: [
-            //       PageContext.read,
-            //       PageContext.bucket,
-            //       PageContext.recommend,
-            //     ],
-            //     radioButtonValue: (value) {
-            //       print(value);
-            //       pageContextNotifier.value = value;
-            //     },
-            //     defaultSelected: PageContext.read,
-            //     elevation: 0,
-            //     enableShape: true,
-            //     wrapAlignment: WrapAlignment.spaceAround,
-            //     buttonTextStyle: ButtonTextStyle(
-            //         selectedColor: Colors.white,
-            //         unSelectedColor: Colors.black,
-            //         textStyle: Theme.of(context).textTheme.subtitle1),
-            //     unSelectedColor: Theme.of(context).canvasColor,
-            //     selectedColor: Theme.of(context).accentColor,
-            //   ),
-            // ),
+            SearchBar(callback: (val) => setState(() => searchQuery = val)),
             ValueListenableBuilder(
                 valueListenable: pageContextNotifier,
                 builder: (context, PageContext pageContext, wdgt) {
@@ -105,18 +90,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context, AsyncSnapshot<List<Book>> snapshot) {
                         return Expanded(
                           child: snapshot.data.length > 0
-                              ? AnimatedSwitcher(
-                                  duration: Duration(seconds: 1),
-                                  child: GridView.count(
-                                    crossAxisCount: 2,
-                                    childAspectRatio: (240 / 390),
-                                    crossAxisSpacing: 10,
-                                    mainAxisSpacing: 5,
-                                    children: List.generate(
-                                      snapshot.data.length,
-                                      (index) =>
-                                          BookItem(book: snapshot.data[index]),
-                                    ),
+                              ? GridView.count(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: (240 / 390),
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 5,
+                                  children: List.generate(
+                                    snapshot.data.length,
+                                    (index) =>
+                                        BookItem(book: snapshot.data[index]),
                                   ),
                                 )
                               : Container(), // Empty
@@ -130,7 +112,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Stream<List<Book>> _selectStreamData(PageContext pageContext, User user) {
     switch (pageContext) {
       case PageContext.read:
-        return _db.streamReadBooks(user);
+        return searchQuery == null || searchQuery == ""
+            ? _db.streamReadBooks(user)
+            : _db.searchReadBooks(user, searchQuery);
         break;
       case PageContext.bucket:
         return _db.streamRecommendedBooks(user);
