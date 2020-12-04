@@ -7,6 +7,6 @@ import 'package:booc/views/landing.dart';
 class Root extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Provider.of<User>(context) != null ? HomePage() : LandingPage();
+    return Provider.of<User>(context) != null ? HomeScreen() : LandingPage();
   }
 }

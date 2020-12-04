@@ -39,23 +39,6 @@ class MenuScreen extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 10.0),
               ),
               GestureDetector(
-                onTap: () {
-                  // Navigator.pushReplacement(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) =>
-                  //             BucketListScreen(dataBloc: dataBloc)));
-                },
-                child: Text("Bucket List",
-                    style: Theme.of(context).textTheme.headline5),
-              ),
-              Container(
-                height: 2.0,
-                width: 50,
-                color: Theme.of(context).primaryColor,
-                margin: EdgeInsets.symmetric(vertical: 10.0),
-              ),
-              GestureDetector(
                 onTap: () async {
                   Navigator.of(context).pop();
                   await _authService.signOut();

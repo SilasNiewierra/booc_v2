@@ -1,23 +1,26 @@
 import 'package:booc/models/book_model.dart';
+import 'package:booc/models/variables.dart';
 import 'package:booc/services/authenticate.dart';
 import 'package:booc/services/database.dart';
-import 'package:booc/views/detail.dart';
+import 'package:booc/views/book_item.dart';
+import 'package:booc/views/bucket.dart';
 import 'package:booc/views/menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 
-class HomePage extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   final AuthenticationService authenticationService =
       new AuthenticationService();
 
   final DatabaseService _db = new DatabaseService();
+  ValueNotifier<PageContext> pageContextNotifier =
+      new ValueNotifier<PageContext>(PageContext.read);
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +35,15 @@ class _HomePageState extends State<HomePage> {
           ),
           backgroundColor: Colors.transparent,
           elevation: 0.0,
+          actions: [
+            IconButton(
+                icon: Icon(Icons.bookmark_border,
+                    color: Theme.of(context).primaryColor),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => BucketScreen()));
+                })
+          ],
         ),
         body: _buildBody(context));
   }
@@ -56,102 +68,75 @@ class _HomePageState extends State<HomePage> {
               margin: EdgeInsets.symmetric(vertical: 5.0),
               height: 40.0,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0),
-              child: CustomRadioButton(
-                buttonLables: [
-                  'Read',
-                  'Bucket',
-                  'Explore',
-                ],
-                buttonValues: [
-                  "READ",
-                  "BUCKET",
-                  "EXPLORE",
-                ],
-                radioButtonValue: (value) {
-                  print(value);
-                },
-                defaultSelected: "READ",
-                elevation: 0,
-                enableShape: true,
-                wrapAlignment: WrapAlignment.spaceAround,
-                buttonTextStyle: ButtonTextStyle(
-                    selectedColor: Colors.white,
-                    unSelectedColor: Colors.black,
-                    textStyle: Theme.of(context).textTheme.subtitle1),
-                unSelectedColor: Theme.of(context).canvasColor,
-                selectedColor: Theme.of(context).accentColor,
-              ),
-            ),
-            StreamBuilder(
-                stream: _db.streamReadBooks(user),
-                builder: (context, AsyncSnapshot<List<Book>> snapshot) {
-                  return Expanded(
-                    child: snapshot.data.length > 0
-                        ? GridView.count(
-                            crossAxisCount: 2,
-                            childAspectRatio: (240 / 390),
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 5,
-                            children: List.generate(
-                              snapshot.data.length,
-                              (index) => _buildBook(snapshot.data[index]),
-                            ),
-                          )
-                        : Container(), // Empty
-                  );
+            // Padding(
+            //   padding: EdgeInsets.symmetric(vertical: 10.0),
+            //   child: CustomRadioButton(
+            //     buttonLables: [
+            //       'Read',
+            //       'Bucket',
+            //       'For Your',
+            //     ],
+            //     buttonValues: [
+            //       PageContext.read,
+            //       PageContext.bucket,
+            //       PageContext.recommend,
+            //     ],
+            //     radioButtonValue: (value) {
+            //       print(value);
+            //       pageContextNotifier.value = value;
+            //     },
+            //     defaultSelected: PageContext.read,
+            //     elevation: 0,
+            //     enableShape: true,
+            //     wrapAlignment: WrapAlignment.spaceAround,
+            //     buttonTextStyle: ButtonTextStyle(
+            //         selectedColor: Colors.white,
+            //         unSelectedColor: Colors.black,
+            //         textStyle: Theme.of(context).textTheme.subtitle1),
+            //     unSelectedColor: Theme.of(context).canvasColor,
+            //     selectedColor: Theme.of(context).accentColor,
+            //   ),
+            // ),
+            ValueListenableBuilder(
+                valueListenable: pageContextNotifier,
+                builder: (context, PageContext pageContext, wdgt) {
+                  return StreamBuilder(
+                      stream: _selectStreamData(pageContext, user),
+                      builder: (context, AsyncSnapshot<List<Book>> snapshot) {
+                        return Expanded(
+                          child: snapshot.data.length > 0
+                              ? AnimatedSwitcher(
+                                  duration: Duration(seconds: 1),
+                                  child: GridView.count(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: (240 / 390),
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 5,
+                                    children: List.generate(
+                                      snapshot.data.length,
+                                      (index) =>
+                                          BookItem(book: snapshot.data[index]),
+                                    ),
+                                  ),
+                                )
+                              : Container(), // Empty
+                        );
+                      });
                 })
           ],
         ));
   }
 
-  Widget _buildBook(Book book) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            new MaterialPageRoute(
-                builder: (context) => DetailScreen(bookItem: book)));
-      },
-      child: Container(
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Hero(
-                tag: book.uId,
-                child: Image.network(
-                  book.imageUrl,
-                  height: 340,
-                  width: 240,
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        book.title,
-                        style: Theme.of(context).textTheme.headline6,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(book.author,
-                          style: Theme.of(context).textTheme.bodyText2)
-                    ],
-                  ),
-                ),
-                IconButton(icon: Icon(Icons.more_vert), onPressed: null)
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+  Stream<List<Book>> _selectStreamData(PageContext pageContext, User user) {
+    switch (pageContext) {
+      case PageContext.read:
+        return _db.streamReadBooks(user);
+        break;
+      case PageContext.bucket:
+        return _db.streamRecommendedBooks(user);
+        break;
+      default:
+        return _db.streamReadBooks(user);
+    }
   }
 }

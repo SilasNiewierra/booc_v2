@@ -14,4 +14,24 @@ class DatabaseService {
         .map(
             (list) => list.docs.map((doc) => Book.fromFirestore(doc)).toList());
   }
+
+  Stream<List<Book>> streamBucketBooks(User user) {
+    return _db
+        .collection('bucket_books')
+        .doc(user.uid)
+        .collection('books')
+        .snapshots()
+        .map(
+            (list) => list.docs.map((doc) => Book.fromFirestore(doc)).toList());
+  }
+
+  Stream<List<Book>> streamRecommendedBooks(User user) {
+    return _db
+        .collection('books')
+        .doc(user.uid)
+        .collection('books')
+        .snapshots()
+        .map(
+            (list) => list.docs.map((doc) => Book.fromFirestore(doc)).toList());
+  }
 }
