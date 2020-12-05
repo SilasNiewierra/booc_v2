@@ -36,16 +36,13 @@ class _BucketScreenState extends State<BucketScreen> {
 
   Widget _buildBody(BuildContext context) {
     User user = Provider.of<User>(context);
-    String userName = user.displayName == null || user.displayName.length <= 0
-        ? 'Bookworm'
-        : user.displayName;
     return Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Hi " + userName,
+            Text("Your Bucketlist",
                 style: Theme.of(context).textTheme.headline3),
             Text("Books you marked for future readings",
                 style: Theme.of(context).textTheme.headline5),

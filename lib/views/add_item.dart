@@ -172,6 +172,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
                     });
                   },
                   onChanged: (value) {
+                    FocusScope.of(context).requestFocus(new FocusNode());
                     setState(() {
                       category = value;
                     });
