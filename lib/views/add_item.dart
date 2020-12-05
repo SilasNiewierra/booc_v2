@@ -5,6 +5,7 @@ import 'package:booc/services/database.dart';
 import 'package:booc/views/components/dropdown_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class AddBookScreen extends StatefulWidget {
@@ -43,7 +44,11 @@ class _AddBookScreenState extends State<AddBookScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: _buildBody(size),
+      body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: _buildBody(size)),
     );
   }
 
@@ -204,7 +209,14 @@ class _AddBookScreenState extends State<AddBookScreen> {
                             setState(() => error =
                                 "Could not add the book. Please try again");
                           } else {
-                            print("Added book to your read list");
+                            Fluttertoast.showToast(
+                                msg: "Added to your read list",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 3,
+                                backgroundColor: Theme.of(context).primaryColor,
+                                textColor: Colors.white,
+                                fontSize: 20.0);
                             Navigator.pop(context);
                           }
                         }
