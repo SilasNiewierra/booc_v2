@@ -3,6 +3,7 @@ import 'package:booc/models/variables.dart';
 import 'package:booc/services/authenticate.dart';
 import 'package:booc/services/colors.dart';
 import 'package:booc/services/database.dart';
+import 'package:booc/views/add_item.dart';
 import 'package:booc/views/book_item.dart';
 import 'package:booc/views/bucket.dart';
 import 'package:booc/views/menu.dart';
@@ -56,7 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: _buildBody(context)),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _db.updateDocs(Provider.of<User>(context, listen: false));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddBookScreen()));
         },
         child: Icon(
           Icons.add,

@@ -55,28 +55,30 @@ class DatabaseService {
   }
 
   // upload a new book to user read section
-  Future<void> addBook(User user, Book book) {
-    // String title = book.title.replaceAll(new RegExp(r"\s+"), "");
-    List<String> keywords = [];
-    for (int i = 0; i < book.title.length; i++) {
-      String word = book.title.substring(0, i);
-      keywords.add(word);
+  Future<bool> addBook(User user, Book book) async {
+    try {
+      List<String> keywords = [];
+      for (int i = 0; i < book.title.length; i++) {
+        String word = book.title.substring(0, i);
+        keywords.add(word);
+      }
+      dynamic result = await _db
+          .collection('read_books')
+          .doc(user.uid)
+          .collection('books')
+          .add({
+        'author': book.author,
+        'category': book.category,
+        'description': book.description,
+        'img_url': book.imageUrl,
+        'title': book.title,
+        'search_keywords': keywords
+      });
+      return result;
+    } catch (e) {
+      print(e);
+      return null;
     }
-    // Call the user's CollectionReference to add a new user
-    return _db
-        .collection('read_books')
-        .doc(user.uid)
-        .collection('books')
-        .add({
-          'author': book.author,
-          'category': book.category,
-          'description': book.description,
-          'img_url': book.imageUrl,
-          'title': book.title,
-          'search_keywords': keywords
-        })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
   }
 
   // HELPER: return all read books and call other helper functions
