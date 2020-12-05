@@ -55,13 +55,13 @@ class DatabaseService {
   }
 
   // upload a new book to user read section
-  Future<bool> addBook(User user, Book book) async {
+  Future addBook(User user, Book book) async {
     try {
       List<String> keywords = [];
-      for (int i = 0; i < book.title.length; i++) {
-        String word = book.title.substring(0, i);
-        keywords.add(word);
-      }
+      // for (int i = 0; i < book.title.length; i++) {
+      //   String word = book.title.substring(0, i);
+      //   keywords.add(word);
+      // }
       dynamic result = await _db
           .collection('read_books')
           .doc(user.uid)

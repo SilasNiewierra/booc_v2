@@ -124,7 +124,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
                 ),
                 validator: (val) => val.isNotEmpty ? null : 'Enter an author',
                 onChanged: (val) {
-                  setState(() => title = val);
+                  setState(() => author = val);
                 },
               ),
               SizedBox(height: 20.0),
@@ -146,7 +146,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
                 validator: (val) =>
                     val.isNotEmpty ? null : 'Enter a short description',
                 onChanged: (val) {
-                  setState(() => title = val);
+                  setState(() => description = val);
                 },
               ),
               SizedBox(height: 20.0),
@@ -197,7 +197,8 @@ class _AddBookScreenState extends State<AddBookScreen> {
                               description: description,
                               imageUrl: defaultImageUrl);
                           dynamic result = await _db.addBook(
-                              Provider.of<User>(context), addBook);
+                              Provider.of<User>(context, listen: false),
+                              addBook);
 
                           if (result == null) {
                             setState(() => error =
