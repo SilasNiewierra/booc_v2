@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:booc/models/book_model.dart';
 import 'package:booc/models/variables.dart';
 import 'package:booc/services/colors.dart';
@@ -6,6 +8,7 @@ import 'package:booc/views/components/dropdown_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class AddBookScreen extends StatefulWidget {
@@ -24,6 +27,31 @@ class _AddBookScreenState extends State<AddBookScreen> {
   String error = '';
 
   List<String> categories;
+
+  File _image;
+  final picker = ImagePicker();
+
+  Future getImage(bool fromGallery) async {
+    var pickedFile;
+
+    if (fromGallery) {
+      pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+      );
+    } else {
+      pickedFile = await picker.getImage(
+        source: ImageSource.camera,
+      );
+    }
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -179,6 +207,72 @@ class _AddBookScreenState extends State<AddBookScreen> {
                     });
                   },
                   dataSource: categories),
+              SizedBox(height: 20.0),
+              Center(
+                child: _image == null
+                    ? Column(
+                        children: [
+                          RaisedButton(
+                            onPressed: () {
+                              getImage(false);
+                            },
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            child: Text(
+                              "Upload from Camera",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  .copyWith(
+                                    color: ColorService().getLightTextColor(),
+                                  ),
+                            ),
+                          ),
+                          Text(
+                            "or",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                          RaisedButton(
+                            onPressed: () {
+                              getImage(true);
+                            },
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            child: Text(
+                              "Upload from Gallery",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  .copyWith(
+                                    color: ColorService().getLightTextColor(),
+                                  ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Stack(
+                        children: [
+                          Image.file(
+                            _image,
+                            width: 240,
+                            height: 340,
+                            fit: BoxFit.cover,
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: ColorService().getPrimaryColor(),
+                              ),
+                              onPressed: () {
+                                setState(() => _image = null);
+                              }),
+                        ],
+                      ),
+              ),
               Container(
                 margin: EdgeInsets.only(top: 50.0),
                 child: SizedBox(
@@ -205,7 +299,8 @@ class _AddBookScreenState extends State<AddBookScreen> {
                               imageUrl: defaultImageUrl);
                           dynamic result = await _db.addBook(
                               Provider.of<User>(context, listen: false),
-                              addBook);
+                              addBook,
+                              _image);
 
                           if (result == null) {
                             setState(() => error =

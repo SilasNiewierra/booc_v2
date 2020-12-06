@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:booc/models/book_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class DatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -55,8 +58,9 @@ class DatabaseService {
   }
 
   // upload a new book to user read section
-  Future addBook(User user, Book book) async {
+  Future addBook(User user, Book book, File _image) async {
     try {
+      String downloadURL = await uploadFile(_image);
       List<String> keywords = [];
       // for (int i = 0; i < book.title.length; i++) {
       //   String word = book.title.substring(0, i);
@@ -70,7 +74,7 @@ class DatabaseService {
         'author': book.author,
         'category': book.category,
         'description': book.description,
-        'img_url': book.imageUrl,
+        'img_url': downloadURL ??= book.imageUrl,
         'title': book.title,
         'search_keywords': keywords
       });
@@ -79,6 +83,20 @@ class DatabaseService {
       print(e);
       return null;
     }
+  }
+
+  Future<String> uploadFile(File _image) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    var downloadURL;
+    Reference ref =
+        storage.ref().child("book_covers/image_" + DateTime.now().toString());
+    UploadTask uploadTask = ref.putFile(_image);
+    await uploadTask.whenComplete(() {
+      downloadURL = ref.getDownloadURL();
+    }).catchError((onError) {
+      print(onError);
+    });
+    return downloadURL;
   }
 
   // HELPER: return all read books and call other helper functions
