@@ -18,6 +18,9 @@ class AddBookScreen extends StatefulWidget {
 
 class _AddBookScreenState extends State<AddBookScreen> {
   final DatabaseService _db = new DatabaseService();
+
+  bool uploadInProgress = false;
+
   final _formKey = GlobalKey<FormState>();
   String author = '';
   String category = '';
@@ -288,7 +291,9 @@ class _AddBookScreenState extends State<AddBookScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
                       onPressed: () async {
-                        if (_formKey.currentState.validate()) {
+                        if (_formKey.currentState.validate() &&
+                            !uploadInProgress) {
+                          uploadInProgress = true;
                           String defaultImageUrl =
                               "https://source.unsplash.com/random/800x600";
                           Book addBook = new Book(
@@ -301,7 +306,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
                               Provider.of<User>(context, listen: false),
                               addBook,
                               _image);
-
+                          uploadInProgress = false;
                           if (result == null) {
                             setState(() => error =
                                 "Could not add the book. Please try again");
