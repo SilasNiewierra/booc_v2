@@ -16,6 +16,7 @@ class _SearchBarState extends State<SearchBar> {
   String searchQuery;
   ValueNotifier<bool> searching = new ValueNotifier(false);
   FocusNode _focus = new FocusNode();
+  final queryController = TextEditingController();
 
   @override
   void initState() {
@@ -42,6 +43,7 @@ class _SearchBarState extends State<SearchBar> {
               width: isSearching ? size.width - 90 : size.width - 40,
               margin: EdgeInsets.symmetric(vertical: 20.0),
               child: TextField(
+                controller: queryController,
                 focusNode: _focus,
                 style: Theme.of(context).textTheme.headline5,
                 decoration: InputDecoration(
@@ -77,6 +79,11 @@ class _SearchBarState extends State<SearchBar> {
                 child: IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
+                    setState(() {
+                      searchQuery = "";
+                    });
+                    queryController.clear();
+                    widget.callback(searchQuery);
                     searching.value = false;
                     _focus.unfocus();
                   },

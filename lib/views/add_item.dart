@@ -28,6 +28,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
   String imageUrl = '';
   String title = '';
   String error = '';
+  String imageError = '';
 
   List<String> categories;
 
@@ -255,6 +256,13 @@ class _AddBookScreenState extends State<AddBookScreen> {
                                   ),
                             ),
                           ),
+                          Text(
+                            imageError,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(color: Colors.red),
+                          ),
                         ],
                       )
                     : Stack(
@@ -291,7 +299,12 @@ class _AddBookScreenState extends State<AddBookScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
                       onPressed: () async {
+                        if (_image == null) {
+                          setState(() =>
+                              imageError = "Upload or select a book cover");
+                        }
                         if (_formKey.currentState.validate() &&
+                            _image != null &&
                             !uploadInProgress) {
                           uploadInProgress = true;
                           String defaultImageUrl =

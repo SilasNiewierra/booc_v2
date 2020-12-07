@@ -21,15 +21,13 @@ class DatabaseService {
 
   // stream searched by query in read books
   Stream<List<Book>> searchReadBooks(User user, String query) {
-    String cleanQuery = query.replaceAll(new RegExp(r"\s+"), "");
+    String cleanQuery = query.toLowerCase();
 
     return _db
         .collection('read_books')
         .doc(user.uid)
         .collection('books')
-        // .where("search_keywords", arrayContains: cleanQuery)
-        .where('title', isGreaterThanOrEqualTo: cleanQuery.toUpperCase())
-        .where('title', isLessThan: cleanQuery.toLowerCase() + 'z')
+        .where("search_keywords", arrayContains: cleanQuery)
         .snapshots()
         .map(
             (list) => list.docs.map((doc) => Book.fromFirestore(doc)).toList());
@@ -59,13 +57,13 @@ class DatabaseService {
 
   // upload a new book to user read section
   Future addBook(User user, Book book, File _image) async {
+    print(book.title + book.author);
     try {
       String downloadURL = await uploadFile(_image);
-      List<String> keywords = [];
-      // for (int i = 0; i < book.title.length; i++) {
-      //   String word = book.title.substring(0, i);
-      //   keywords.add(word);
-      // }
+      List<String> keywords =
+          createKeywords(book.title); // + " " + book.author);
+      print("keywords: ");
+      print(keywords);
       dynamic result = await _db
           .collection('read_books')
           .doc(user.uid)
@@ -85,6 +83,7 @@ class DatabaseService {
     }
   }
 
+  // Upload image file to firestorage
   Future<String> uploadFile(File _image) async {
     FirebaseStorage storage = FirebaseStorage.instance;
     var downloadURL;
@@ -99,6 +98,29 @@ class DatabaseService {
     return downloadURL;
   }
 
+  // Create keywords for search
+  List<String> createKeywords(String keywordString) {
+    keywordString = keywordString.toLowerCase();
+    List<String> keywords = keywordString.split(' ');
+    String curName = '';
+    keywordString.split(' ').forEach((word) {
+      curName += word + " ";
+      List<String> curWords = [];
+      String tempWord = "";
+      curName.split('').forEach((letter) {
+        tempWord += letter;
+        curWords.add(tempWord);
+      });
+      tempWord = "";
+      word.split('').forEach((letter) {
+        tempWord += letter;
+        curWords.add(tempWord);
+      });
+      keywords.addAll(curWords);
+    });
+    return keywords.toSet().toList();
+  }
+
   // HELPER: return all read books and call other helper functions
   void updateDocs(User user) {
     _db
@@ -109,13 +131,28 @@ class DatabaseService {
         .then((data) {
       if (data != null) {
         data.docs.forEach((doc) {
-          // Book book = Book.fromFirestore(doc);
-          // update(user, book, doc.id);
-          delete(user, doc.id);
+          Book book = Book.fromFirestore(doc);
+          // delete(user, doc.id);
+          addKeywords(user, doc.id, book.title);
         });
       }
       print("data is empty");
     });
+  }
+
+  // HELPER: add keywords to books
+  void addKeywords(User user, String bookId, String searchString) {
+    List<String> keywords = createKeywords(searchString);
+    _db
+        .collection('read_books')
+        .doc(user.uid)
+        .collection('books')
+        .doc(bookId)
+        .update({
+          'search_keywords': keywords,
+        })
+        .then((val) => print("Document successfully updated!"))
+        .catchError((error) => print("Error removing document: $error"));
   }
 
   // HELPER: add keywords to books
