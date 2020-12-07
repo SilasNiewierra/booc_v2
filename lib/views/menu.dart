@@ -1,4 +1,5 @@
 import 'package:booc/services/authenticate.dart';
+import 'package:booc/views/analytics.dart';
 import 'package:flutter/material.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -23,11 +24,12 @@ class MenuScreen extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  // Navigator.pushReplacement(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => AnalyticsScreen(
-                  //             dataBloc: dataBloc, animate: true)));
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AnalyticsScreen(animate: true),
+                    ),
+                  );
                 },
                 child: Text("Analytics",
                     style: Theme.of(context).textTheme.headline5),
