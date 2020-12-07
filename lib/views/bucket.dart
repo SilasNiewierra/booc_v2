@@ -20,6 +20,7 @@ class _BucketScreenState extends State<BucketScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -31,10 +32,10 @@ class _BucketScreenState extends State<BucketScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0.0,
         ),
-        body: _buildBody(context));
+        body: _buildBody(context, size));
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, Size size) {
     User user = Provider.of<User>(context);
     return Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
@@ -48,7 +49,7 @@ class _BucketScreenState extends State<BucketScreen> {
                 style: Theme.of(context).textTheme.headline5),
             SearchBar(),
             StreamBuilder(
-                stream: _db.streamBucketBooks(user),
+                stream: _db.streamRecommendedBooks(user),
                 builder: (context, AsyncSnapshot<List<Book>> snapshot) {
                   return Expanded(
                     child: snapshot.data.length > 0
@@ -62,7 +63,13 @@ class _BucketScreenState extends State<BucketScreen> {
                               (index) => BookItem(book: snapshot.data[index]),
                             ),
                           )
-                        : Container(), // Empty
+                        : Center(
+                            child: Image.asset(
+                              'assets/images/no_bucket.png',
+                              width: size.width - 100,
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
                   );
                 })
           ],

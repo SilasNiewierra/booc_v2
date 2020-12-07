@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -54,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: () {
             FocusScope.of(context).unfocus();
           },
-          child: _buildBody(context)),
+          child: _buildBody(context, size)),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
@@ -68,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, Size size) {
     User user = Provider.of<User>(context);
     String userName = user.displayName == null || user.displayName.length <= 0
         ? 'Bookworm'
@@ -103,7 +104,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                         BookItem(book: snapshot.data[index]),
                                   ),
                                 )
-                              : Container(), // Empty
+                              : Center(
+                                  child: Image.asset(
+                                    'assets/images/no_books.png',
+                                    width: size.width - 100,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
                         );
                       });
                 })

@@ -47,7 +47,7 @@ class DatabaseService {
   // stream recommended books
   Stream<List<Book>> streamRecommendedBooks(User user) {
     return _db
-        .collection('books')
+        .collection('recommended_books')
         .doc(user.uid)
         .collection('books')
         .snapshots()
