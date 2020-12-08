@@ -4,23 +4,25 @@ import 'package:booc/models/book_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 
 class DatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // stream read books
-  Stream<List<Book>> streamReadBooks(User user) {
+  Stream<List<Book>> streamReadBooks(BuildContext context, User user) {
     return _db
         .collection('read_books')
         .doc(user.uid)
         .collection('books')
         .snapshots()
-        .map(
-            (list) => list.docs.map((doc) => Book.fromFirestore(doc)).toList());
+        .map((list) =>
+            list.docs.map((doc) => Book.fromFirestore(context, doc)).toList());
   }
 
   // stream searched by query in read books
-  Stream<List<Book>> searchReadBooks(User user, String query) {
+  Stream<List<Book>> searchReadBooks(
+      BuildContext context, User user, String query) {
     String cleanQuery = query.toLowerCase();
 
     return _db
@@ -29,30 +31,30 @@ class DatabaseService {
         .collection('books')
         .where("search_keywords", arrayContains: cleanQuery)
         .snapshots()
-        .map(
-            (list) => list.docs.map((doc) => Book.fromFirestore(doc)).toList());
+        .map((list) =>
+            list.docs.map((doc) => Book.fromFirestore(context, doc)).toList());
   }
 
   // stream bucket books
-  Stream<List<Book>> streamBucketBooks(User user) {
+  Stream<List<Book>> streamBucketBooks(BuildContext context, User user) {
     return _db
         .collection('bucket_books')
         .doc(user.uid)
         .collection('books')
         .snapshots()
-        .map(
-            (list) => list.docs.map((doc) => Book.fromFirestore(doc)).toList());
+        .map((list) =>
+            list.docs.map((doc) => Book.fromFirestore(context, doc)).toList());
   }
 
   // stream recommended books
-  Stream<List<Book>> streamRecommendedBooks(User user) {
+  Stream<List<Book>> streamRecommendedBooks(BuildContext context, User user) {
     return _db
         .collection('recommended_books')
         .doc(user.uid)
         .collection('books')
         .snapshots()
-        .map(
-            (list) => list.docs.map((doc) => Book.fromFirestore(doc)).toList());
+        .map((list) =>
+            list.docs.map((doc) => Book.fromFirestore(context, doc)).toList());
   }
 
   // upload a new book to user read section

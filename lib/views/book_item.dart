@@ -1,8 +1,6 @@
-import 'package:booc/models/analytics_model.dart';
 import 'package:booc/models/book_model.dart';
 import 'package:booc/views/detail.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class BookItem extends StatefulWidget {
   final Book book;
@@ -16,8 +14,6 @@ class BookItem extends StatefulWidget {
 class _BookItemState extends State<BookItem> {
   @override
   Widget build(BuildContext context) {
-    final analyticsModel = Provider.of<AnalyticsModel>(context, listen: false);
-    analyticsModel.addBookToAnalytics(widget.book);
     return GestureDetector(
       onTap: () {
         Navigator.push(

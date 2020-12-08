@@ -1,5 +1,8 @@
+import 'package:booc/models/analytics_model.dart';
 import 'package:booc/models/variables.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Book {
   final String uId;
@@ -19,14 +22,15 @@ class Book {
       // this.liked,
       this.title});
 
-  factory Book.fromFirestore(DocumentSnapshot data) {
-    print(data);
+  factory Book.fromFirestore(BuildContext context, DocumentSnapshot data) {
+    final analyticsModel = Provider.of<AnalyticsModel>(context, listen: false);
     BookCategories category;
     if (data['category'] != null) {
       category = enumFromString(data['category'].toString());
     } else {
       category = BookCategories.novel;
     }
+    analyticsModel.addBookToAnalytics(category);
     return Book(
         uId: data.id ?? '',
         author: data['author'] ?? 'Michael Scott',

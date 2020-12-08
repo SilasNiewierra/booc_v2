@@ -49,7 +49,7 @@ class _BucketScreenState extends State<BucketScreen> {
                 style: Theme.of(context).textTheme.headline5),
             SearchBar(),
             StreamBuilder(
-                stream: _db.streamRecommendedBooks(user),
+                stream: _db.streamRecommendedBooks(context, user),
                 builder: (context, AsyncSnapshot<List<Book>> snapshot) {
                   return Expanded(
                     child: snapshot.data.length > 0

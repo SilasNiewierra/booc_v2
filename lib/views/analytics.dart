@@ -38,6 +38,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   Widget _buildBody(BuildContext context, Size size) {
     final analyticsModel = Provider.of<AnalyticsModel>(context, listen: false);
+    analyticsModel.createAnalyticsData();
     return Consumer<AnalyticsModel>(
         builder: (_, list, __) => Container(
               padding: EdgeInsets.all(20.0),
@@ -87,7 +88,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               behaviors: [
                 new charts.DatumLegend(
                   position: charts.BehaviorPosition.bottom,
-                  horizontalFirst: false,
+                  // horizontalFirst: false,
+                  desiredMaxColumns: 3,
                   outsideJustification:
                       charts.OutsideJustification.middleDrawArea,
                   cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
@@ -101,18 +103,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               ],
             ),
           ),
-          // Center(
-          //   child: Container(
-          //     padding: EdgeInsets.only(bottom: 10.0),
-          //     child: Text(
-          //       "Categories",
-          //       style: Theme.of(context)
-          //           .textTheme
-          //           .headline4
-          //           .copyWith(fontWeight: FontWeight.w100),
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );
