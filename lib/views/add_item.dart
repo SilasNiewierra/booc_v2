@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:booc/models/book_model.dart';
 import 'package:booc/models/variables.dart';
 import 'package:booc/services/colors.dart';
@@ -23,14 +22,12 @@ class _AddBookScreenState extends State<AddBookScreen> {
 
   final _formKey = GlobalKey<FormState>();
   String author = '';
-  String category = '';
+  BookCategories category;
   String description = '';
   String imageUrl = '';
   String title = '';
   String error = '';
   String imageError = '';
-
-  List<String> categories;
 
   File _image;
   final picker = ImagePicker();
@@ -60,15 +57,6 @@ class _AddBookScreenState extends State<AddBookScreen> {
   @override
   void initState() {
     super.initState();
-    categories = [];
-    BookCategories.values.forEach((name) {
-      String value = name?.toString()?.split('.')?.elementAt(1);
-      if (categories.contains(value)) {
-        print('already inside: ' + value.toString());
-      } else {
-        categories.add(value.toString());
-      }
-    });
   }
 
   @override
@@ -191,8 +179,9 @@ class _AddBookScreenState extends State<AddBookScreen> {
               DropDownFormField(
                   hintText: 'Category',
                   validator: (val) {
+                    print("validator dropdown category: ");
                     print(val);
-                    if (val == null || val == '' || val.isEmpty) {
+                    if (val == null || val == '') {
                       return "Select a category";
                     } else {
                       return null;
@@ -210,7 +199,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
                       category = value;
                     });
                   },
-                  dataSource: categories),
+                  dataSource: BookCategories.values),
               SizedBox(height: 20.0),
               Center(
                 child: _image == null
@@ -309,12 +298,14 @@ class _AddBookScreenState extends State<AddBookScreen> {
                           uploadInProgress = true;
                           String defaultImageUrl =
                               "https://source.unsplash.com/random/800x600";
+
                           Book addBook = new Book(
                               author: author,
                               title: title,
                               category: category,
                               description: description,
                               imageUrl: defaultImageUrl);
+
                           dynamic result = await _db.addBook(
                               Provider.of<User>(context, listen: false),
                               addBook,

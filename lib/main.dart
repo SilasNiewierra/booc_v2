@@ -1,3 +1,4 @@
+import 'package:booc/models/analytics_model.dart';
 import 'package:booc/services/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,8 @@ class MyApp extends StatelessWidget {
             providers: [
               // Make user stream available
               StreamProvider<User>.value(value: AuthenticationService().user),
+              ChangeNotifierProvider<AnalyticsModel>(
+                  create: (context) => AnalyticsModel()),
             ],
 
             // All data will be available in this child and descendents

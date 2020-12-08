@@ -1,21 +1,30 @@
-import 'package:booc/models/variables.dart';
+import 'package:booc/models/book_model.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter/cupertino.dart';
 
-class AnalyticsModel {
-  List<BookCategories> categories;
+class AnalyticsModel with ChangeNotifier {
   charts.Series<ChartSegment, String> categoryData;
+  var categoryMap = {};
+
+  void addBookToAnalytics(Book book) {
+    String category = book.category?.toString()?.split('.')?.elementAt(1);
+    if (!categoryMap.containsKey(category)) {
+      categoryMap[category] = 0;
+    }
+    categoryMap[category]++;
+  }
 
   // Create one series with sample hard coded data.
   // Replace all categories with only the read ones.
   void createAnalyticsData() {
-    var categoryMap = {};
-    BookCategories.values.forEach((category) {
-      String categoryTitle = category?.toString()?.split('.')?.elementAt(1);
-      if (!categoryMap.containsKey(categoryTitle)) {
-        categoryMap[categoryTitle] = 0;
-      }
-      categoryMap[categoryTitle]++;
-    });
+    // var categoryMap = {};
+    // BookCategories.values.forEach((category) {
+    //   String categoryTitle = category?.toString()?.split('.')?.elementAt(1);
+    //   if (!categoryMap.containsKey(categoryTitle)) {
+    //     categoryMap[categoryTitle] = 0;
+    //   }
+    //   categoryMap[categoryTitle]++;
+    // });
 
     List<ChartSegment> data = [];
     categoryMap.forEach((k, v) {

@@ -57,20 +57,17 @@ class DatabaseService {
 
   // upload a new book to user read section
   Future addBook(User user, Book book, File _image) async {
-    print(book.title + book.author);
     try {
       String downloadURL = await uploadFile(_image);
       List<String> keywords =
           createKeywords(book.title); // + " " + book.author);
-      print("keywords: ");
-      print(keywords);
       dynamic result = await _db
           .collection('read_books')
           .doc(user.uid)
           .collection('books')
           .add({
         'author': book.author,
-        'category': book.category,
+        'category': book.category.toString(),
         'description': book.description,
         'img_url': downloadURL ??= book.imageUrl,
         'title': book.title,
@@ -131,9 +128,9 @@ class DatabaseService {
         .then((data) {
       if (data != null) {
         data.docs.forEach((doc) {
-          Book book = Book.fromFirestore(doc);
+          // Book book = Book.fromFirestore(doc);
           // delete(user, doc.id);
-          addKeywords(user, doc.id, book.title);
+          // addKeywords(user, doc.id, book.title);
         });
       }
       print("data is empty");

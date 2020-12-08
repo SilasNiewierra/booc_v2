@@ -1,9 +1,10 @@
+import 'package:booc/models/variables.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Book {
   final String uId;
   final String author;
-  final String category;
+  final BookCategories category;
   final String description;
   final String imageUrl;
   // final bool liked;
@@ -19,11 +20,17 @@ class Book {
       this.title});
 
   factory Book.fromFirestore(DocumentSnapshot data) {
-    // data = data ?? {};
+    print(data);
+    BookCategories category;
+    if (data['category'] != null) {
+      category = enumFromString(data['category'].toString());
+    } else {
+      category = BookCategories.novel;
+    }
     return Book(
         uId: data.id ?? '',
         author: data['author'] ?? 'Michael Scott',
-        category: data['category'] ?? 'Novel',
+        category: category,
         description: data['description'] ??
             'Just a man trying to make it in the paper business',
         imageUrl: data['img_url'] ?? 'https://i.redd.it/e3e34m66mip01.png',

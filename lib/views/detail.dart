@@ -1,4 +1,5 @@
 import 'package:booc/models/book_model.dart';
+import 'package:booc/models/variables.dart';
 import 'package:booc/services/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -96,7 +97,7 @@ class _DetailScreenState extends State<DetailScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Category: " + widget.bookItem.category,
+                  "Category: " + enumToTitle(widget.bookItem.category),
                   style: Theme.of(context).textTheme.headline5,
                 ),
                 IconButton(

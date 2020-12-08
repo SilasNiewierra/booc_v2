@@ -1,6 +1,7 @@
 import 'package:booc/models/analytics_model.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:provider/provider.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   final bool animate;
@@ -12,14 +13,6 @@ class AnalyticsScreen extends StatefulWidget {
 }
 
 class _AnalyticsScreenState extends State<AnalyticsScreen> {
-  AnalyticsModel analyticsModel = new AnalyticsModel();
-  @override
-  void initState() {
-    super.initState();
-    analyticsModel.createAnalyticsData();
-    print(analyticsModel.categoryData);
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -44,38 +37,40 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   Widget _buildBody(BuildContext context, Size size) {
-    return Container(
-      padding: EdgeInsets.all(20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Analytics,",
-                    style: Theme.of(context).textTheme.headline3),
-                Text("a visual representation of your read categories.",
-                    style: Theme.of(context).textTheme.headline5),
-              ],
-            ),
-          ),
-          analyticsModel.categoryData.data.length > 0
-              ? _buildAnalytics(analyticsModel.categoryData, size)
-              : Expanded(
-                  child: Center(
-                    child: Image.asset(
-                      'assets/images/no_books.png',
-                      width: size.width - 100,
-                      fit: BoxFit.fitWidth,
+    final analyticsModel = Provider.of<AnalyticsModel>(context, listen: false);
+    return Consumer<AnalyticsModel>(
+        builder: (_, list, __) => Container(
+              padding: EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Analytics,",
+                            style: Theme.of(context).textTheme.headline3),
+                        Text("a visual representation of your read categories.",
+                            style: Theme.of(context).textTheme.headline5),
+                      ],
                     ),
                   ),
-                ),
-        ],
-      ),
-    );
+                  analyticsModel.categoryData.data.length > 0
+                      ? _buildAnalytics(analyticsModel.categoryData, size)
+                      : Expanded(
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/no_books.png',
+                              width: size.width - 100,
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
+                        ),
+                ],
+              ),
+            ));
   }
 
   Widget _buildAnalytics(charts.Series<ChartSegment, String> chart, Size size) {

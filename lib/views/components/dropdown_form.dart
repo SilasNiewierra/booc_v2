@@ -1,10 +1,11 @@
+import 'package:booc/models/variables.dart';
 import 'package:flutter/material.dart';
 
 class DropDownFormField extends FormField<dynamic> {
   final String hintText;
   final bool required;
   final String errorText;
-  final dynamic value;
+  final BookCategories value;
   final List dataSource;
   final Function onChanged;
   final EdgeInsets contentPadding;
@@ -24,7 +25,7 @@ class DropDownFormField extends FormField<dynamic> {
           onSaved: onSaved,
           validator: validator,
           autovalidateMode: autovalidateMode,
-          initialValue: value == '' ? null : value,
+          initialValue: value == null ? null : value,
           builder: (FormFieldState<dynamic> state) {
             return Container(
               margin: EdgeInsets.all(0),
@@ -53,18 +54,14 @@ class DropDownFormField extends FormField<dynamic> {
                         hint: Text(
                           hintText,
                         ),
-                        value: value == '' ? null : value,
+                        value: value == null ? null : value,
                         onChanged: (dynamic newValue) {
                           state.didChange(newValue);
                           onChanged(newValue);
                         },
                         items: dataSource.map((item) {
-                          String title = item
-                              .split("_")
-                              .map((str) =>
-                                  "${str[0].toUpperCase()}${str.substring(1)}")
-                              .join(" ");
-                          return DropdownMenuItem<dynamic>(
+                          String title = enumToTitle(item);
+                          return DropdownMenuItem<BookCategories>(
                             value: item,
                             child: Text(title, overflow: TextOverflow.ellipsis),
                           );
