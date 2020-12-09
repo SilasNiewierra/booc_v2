@@ -11,13 +11,11 @@ class AnalyticsModel with ChangeNotifier {
       categoryMap[category] = 0;
     }
     categoryMap[category]++;
-    print(categoryMap);
   }
 
   void createAnalyticsData() {
     List<ChartSegment> data = [];
-    print("create Chart data: ");
-    print(categoryMap);
+
     categoryMap.forEach((key, v) {
       String title = enumToTitle(key);
       data.add(new ChartSegment(title, v));

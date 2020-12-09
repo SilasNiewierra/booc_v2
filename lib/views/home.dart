@@ -100,8 +100,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   mainAxisSpacing: 5,
                                   children: List.generate(
                                     snapshot.data.length,
-                                    (index) =>
-                                        BookItem(book: snapshot.data[index]),
+                                    (index) => BookItem(
+                                      book: snapshot.data[index],
+                                      pageContext: PageContext.read,
+                                    ),
                                   ),
                                 )
                               : Center(

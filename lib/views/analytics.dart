@@ -3,16 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:provider/provider.dart';
 
-class AnalyticsScreen extends StatefulWidget {
+class AnalyticsScreen extends StatelessWidget {
   final bool animate;
 
   AnalyticsScreen({this.animate});
 
-  @override
-  _AnalyticsScreenState createState() => _AnalyticsScreenState();
-}
-
-class _AnalyticsScreenState extends State<AnalyticsScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -59,7 +54,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     ),
                   ),
                   analyticsModel.categoryData.data.length > 0
-                      ? _buildAnalytics(analyticsModel.categoryData, size)
+                      ? _buildAnalytics(
+                          analyticsModel.categoryData, size, context)
                       : Expanded(
                           child: Center(
                             child: Image.asset(
@@ -74,7 +70,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             ));
   }
 
-  Widget _buildAnalytics(charts.Series<ChartSegment, String> chart, Size size) {
+  Widget _buildAnalytics(charts.Series<ChartSegment, String> chart, Size size,
+      BuildContext context) {
     List<charts.Series<ChartSegment, String>> list = [chart];
     return Container(
       height: size.height / 1.2,
@@ -83,7 +80,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           Center(
             child: charts.PieChart(
               list,
-              animate: widget.animate,
+              animate: animate,
               defaultRenderer: new charts.ArcRendererConfig(arcWidth: 50),
               behaviors: [
                 new charts.DatumLegend(

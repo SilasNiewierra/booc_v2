@@ -141,7 +141,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             setState(() =>
                                 error = "Please supply valid credentials.");
                           } else {
-                            print(result);
                             Navigator.pop(context);
                           }
                         }

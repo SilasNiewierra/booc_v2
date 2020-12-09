@@ -139,7 +139,6 @@ class _SignInScreenState extends State<SignInScreen> {
                             setState(() => error =
                                 "Could not sign in with the provided credentials.");
                           } else {
-                            print(result);
                             Navigator.pop(context);
                           }
                         }

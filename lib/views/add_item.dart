@@ -179,8 +179,6 @@ class _AddBookScreenState extends State<AddBookScreen> {
               DropDownFormField(
                   hintText: 'Category',
                   validator: (val) {
-                    print("validator dropdown category: ");
-                    print(val);
                     if (val == null || val == '') {
                       return "Select a category";
                     } else {

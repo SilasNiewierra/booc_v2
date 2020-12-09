@@ -1,4 +1,5 @@
 import 'package:booc/models/book_model.dart';
+import 'package:booc/models/variables.dart';
 import 'package:booc/services/authenticate.dart';
 import 'package:booc/services/database.dart';
 import 'package:booc/views/book_item.dart';
@@ -49,7 +50,7 @@ class _BucketScreenState extends State<BucketScreen> {
                 style: Theme.of(context).textTheme.headline5),
             SearchBar(),
             StreamBuilder(
-                stream: _db.streamRecommendedBooks(context, user),
+                stream: _db.streamBucketBooks(context, user),
                 builder: (context, AsyncSnapshot<List<Book>> snapshot) {
                   return Expanded(
                     child: snapshot.data.length > 0
@@ -60,7 +61,10 @@ class _BucketScreenState extends State<BucketScreen> {
                             mainAxisSpacing: 5,
                             children: List.generate(
                               snapshot.data.length,
-                              (index) => BookItem(book: snapshot.data[index]),
+                              (index) => BookItem(
+                                book: snapshot.data[index],
+                                pageContext: PageContext.bucket,
+                              ),
                             ),
                           )
                         : Center(

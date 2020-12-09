@@ -5,7 +5,7 @@ class ColorService {
   final _defaultLightTextColor = Colors.blueGrey[600];
   final _disabledTextColor = Colors.grey[350];
   final _detailTextColor = Colors.white;
-  final _defaultBackgroundColor = Colors.grey[50];
+  final _defaultBackgroundColor = Colors.white;
 
   Color getPrimaryColor() => _defaultColor;
   Color getSecondaryColor() => _defaultLightTextColor;
