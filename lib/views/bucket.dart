@@ -18,6 +18,7 @@ class _BucketScreenState extends State<BucketScreen> {
       new AuthenticationService();
 
   final DatabaseService _db = new DatabaseService();
+  String searchQuery = "";
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +49,12 @@ class _BucketScreenState extends State<BucketScreen> {
                 style: Theme.of(context).textTheme.headline3),
             Text("Books you marked for future readings",
                 style: Theme.of(context).textTheme.headline5),
-            SearchBar(),
+            SearchBar(callback: (val) => setState(() => searchQuery = val)),
             StreamBuilder(
-                stream: _db.streamBucketBooks(context, user),
+                stream: searchQuery == null || searchQuery == ""
+                    ? _db.streamBucketBooks(context, user)
+                    : _db.searchQueryInBooks(
+                        context, user, searchQuery, PageContext.bucket),
                 builder: (context, AsyncSnapshot<List<Book>> snapshot) {
                   return Expanded(
                     child: snapshot.data.length > 0

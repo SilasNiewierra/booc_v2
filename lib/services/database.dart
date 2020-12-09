@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:booc/models/book_model.dart';
+import 'package:booc/models/variables.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -15,21 +16,7 @@ class DatabaseService {
         .collection('read_books')
         .doc(user.uid)
         .collection('books')
-        .snapshots()
-        .map((list) =>
-            list.docs.map((doc) => Book.fromFirestore(context, doc)).toList());
-  }
-
-  // stream searched by query in read books
-  Stream<List<Book>> searchReadBooks(
-      BuildContext context, User user, String query) {
-    String cleanQuery = query.toLowerCase();
-
-    return _db
-        .collection('read_books')
-        .doc(user.uid)
-        .collection('books')
-        .where("search_keywords", arrayContains: cleanQuery)
+        .limit(100)
         .snapshots()
         .map((list) =>
             list.docs.map((doc) => Book.fromFirestore(context, doc)).toList());
@@ -41,6 +28,7 @@ class DatabaseService {
         .collection('bucket_books')
         .doc(user.uid)
         .collection('books')
+        .limit(100)
         .snapshots()
         .map((list) =>
             list.docs.map((doc) => Book.fromFirestore(context, doc)).toList());
@@ -52,6 +40,24 @@ class DatabaseService {
         .collection('recommended_books')
         .doc(user.uid)
         .collection('books')
+        .limit(100)
+        .snapshots()
+        .map((list) =>
+            list.docs.map((doc) => Book.fromFirestore(context, doc)).toList());
+  }
+
+  // stream list of search results by query
+  Stream<List<Book>> searchQueryInBooks(
+      BuildContext context, User user, String query, PageContext pageContext) {
+    String cleanQuery = query.toLowerCase();
+
+    return _db
+        .collection(
+            pageContext == PageContext.bucket ? 'bucket_books' : 'read_books')
+        .doc(user.uid)
+        .collection('books')
+        .where("search_keywords", arrayContains: cleanQuery)
+        .limit(100)
         .snapshots()
         .map((list) =>
             list.docs.map((doc) => Book.fromFirestore(context, doc)).toList());

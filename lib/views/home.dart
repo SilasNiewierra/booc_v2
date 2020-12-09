@@ -125,7 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
       case PageContext.read:
         return searchQuery == null || searchQuery == ""
             ? _db.streamReadBooks(context, user)
-            : _db.searchReadBooks(context, user, searchQuery);
+            : _db.searchQueryInBooks(
+                context, user, searchQuery, PageContext.read);
         break;
       case PageContext.bucket:
         return _db.streamRecommendedBooks(context, user);
