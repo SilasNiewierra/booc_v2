@@ -71,9 +71,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildBody(BuildContext context, Size size) {
     User user = Provider.of<User>(context);
-    String userName = user.displayName == null || user.displayName.length <= 0
+    String userMail = user.email.split('@').elementAt(0);
+    String userName = userMail == null
         ? 'Bookworm'
-        : user.displayName;
+        : "${userMail[0].toUpperCase()}${userMail.substring(1)}";
+
     return Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
@@ -81,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Hi " + userName,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.headline3),
             Text("Check out all the books you've read",
                 style: Theme.of(context).textTheme.headline5),
