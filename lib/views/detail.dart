@@ -150,14 +150,14 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
             // Bottom Buttons
             Container(
-              margin: EdgeInsets.only(top: 20.0),
+              margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
               child: SizedBox(
                 width: size.width,
                 child: RaisedButton(
                     color: Theme.of(context).backgroundColor,
                     child: Text(
                       widget.pageContext == PageContext.read
-                          ? "Oops... I haven't read that book yet".toUpperCase()
+                          ? "I haven't read that book".toUpperCase()
                           : "I have read that book".toUpperCase(),
                       style: Theme.of(context).textTheme.headline6,
                     ),

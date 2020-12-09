@@ -32,17 +32,19 @@ class _AddBookScreenState extends State<AddBookScreen> {
   File _image;
   final picker = ImagePicker();
 
-  Future getImage(bool fromGallery) async {
+  Future getImage(bool fromGallery, Size size) async {
     var pickedFile;
 
     if (fromGallery) {
       pickedFile = await picker.getImage(
-        source: ImageSource.gallery,
-      );
+          source: ImageSource.gallery,
+          maxHeight: size.height / 3.5,
+          maxWidth: (size.height / 2.7) * 0.75);
     } else {
       pickedFile = await picker.getImage(
-        source: ImageSource.camera,
-      );
+          source: ImageSource.camera,
+          maxHeight: size.height / 3.5,
+          maxWidth: (size.height / 2.7) * 0.75);
     }
 
     setState(() {
@@ -88,259 +90,262 @@ class _AddBookScreenState extends State<AddBookScreen> {
   }
 
   Widget _buildBody(Size size) {
-    return Padding(
-      padding: const EdgeInsets.all(50.0),
-      child: Center(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Add A Book!",
-                style: Theme.of(context).textTheme.headline4,
-                textAlign: TextAlign.start,
-              ),
-              SizedBox(height: 20.0),
-              Text(
-                "Add a new book you've read",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6
-                    .copyWith(color: ColorService().getSecondaryColor()),
-                textAlign: TextAlign.start,
-              ),
-              SizedBox(height: 20.0),
-              TextFormField(
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.only(top: 20), // add padding to adjust text
-                  isDense: true,
-                  hintText: "Title",
-                  prefixIcon: Padding(
-                    padding:
-                        EdgeInsets.only(top: 15), // add padding to adjust icon
-                    child: Icon(
-                      Icons.book,
-                      size: 30.0,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(50.0),
+        child: Center(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Add A Book!",
+                  style: Theme.of(context).textTheme.headline4,
+                  textAlign: TextAlign.start,
+                ),
+                SizedBox(height: 20.0),
+                Text(
+                  "Add a new book you've read",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      .copyWith(color: ColorService().getSecondaryColor()),
+                  textAlign: TextAlign.start,
+                ),
+                SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.only(top: 20), // add padding to adjust text
+                    isDense: true,
+                    hintText: "Title",
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(
+                          top: 15), // add padding to adjust icon
+                      child: Icon(
+                        Icons.book,
+                        size: 30.0,
+                      ),
                     ),
                   ),
+                  validator: (val) => val.isNotEmpty ? null : 'Enter a title',
+                  onChanged: (val) {
+                    setState(() => title = val);
+                  },
                 ),
-                validator: (val) => val.isNotEmpty ? null : 'Enter a title',
-                onChanged: (val) {
-                  setState(() => title = val);
-                },
-              ),
-              SizedBox(height: 20.0),
-              TextFormField(
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.only(top: 20), // add padding to adjust text
-                  isDense: true,
-                  hintText: "Author",
-                  prefixIcon: Padding(
-                    padding:
-                        EdgeInsets.only(top: 15), // add padding to adjust icon
-                    child: Icon(
-                      Icons.perm_identity_outlined,
-                      size: 30.0,
+                SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.only(top: 20), // add padding to adjust text
+                    isDense: true,
+                    hintText: "Author",
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(
+                          top: 15), // add padding to adjust icon
+                      child: Icon(
+                        Icons.perm_identity_outlined,
+                        size: 30.0,
+                      ),
                     ),
                   ),
+                  validator: (val) => val.isNotEmpty ? null : 'Enter an author',
+                  onChanged: (val) {
+                    setState(() => author = val);
+                  },
                 ),
-                validator: (val) => val.isNotEmpty ? null : 'Enter an author',
-                onChanged: (val) {
-                  setState(() => author = val);
-                },
-              ),
-              SizedBox(height: 20.0),
-              TextFormField(
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.only(top: 20), // add padding to adjust text
-                  isDense: true,
-                  hintText: "Description",
-                  prefixIcon: Padding(
-                    padding:
-                        EdgeInsets.only(top: 15), // add padding to adjust icon
-                    child: Icon(
-                      Icons.subject,
-                      size: 30.0,
+                SizedBox(height: 20.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.only(top: 20), // add padding to adjust text
+                    isDense: true,
+                    hintText: "Description",
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(
+                          top: 15), // add padding to adjust icon
+                      child: Icon(
+                        Icons.subject,
+                        size: 30.0,
+                      ),
                     ),
                   ),
+                  validator: (val) =>
+                      val.isNotEmpty ? null : 'Enter a short description',
+                  onChanged: (val) {
+                    setState(() => description = val);
+                  },
                 ),
-                validator: (val) =>
-                    val.isNotEmpty ? null : 'Enter a short description',
-                onChanged: (val) {
-                  setState(() => description = val);
-                },
-              ),
-              SizedBox(height: 20.0),
-              DropDownFormField(
-                  hintText: 'Category',
-                  validator: (val) {
-                    if (val == null || val == '') {
-                      return "Select a category";
-                    } else {
-                      return null;
-                    }
-                  },
-                  value: category,
-                  onSaved: (value) {
-                    setState(() {
-                      category = value;
-                    });
-                  },
-                  onChanged: (value) {
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                    setState(() {
-                      category = value;
-                    });
-                  },
-                  dataSource: BookCategories.values),
-              SizedBox(height: 20.0),
-              Center(
-                child: _image == null
-                    ? Column(
-                        children: [
-                          RaisedButton(
-                            onPressed: () {
-                              getImage(false);
-                            },
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            child: Text(
-                              "Upload from Camera",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  .copyWith(
-                                    color: ColorService().getLightTextColor(),
-                                  ),
-                            ),
-                          ),
-                          Text(
-                            "or",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          RaisedButton(
-                            onPressed: () {
-                              getImage(true);
-                            },
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            child: Text(
-                              "Upload from Gallery",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  .copyWith(
-                                    color: ColorService().getLightTextColor(),
-                                  ),
-                            ),
-                          ),
-                          Text(
-                            imageError,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2
-                                .copyWith(color: Colors.red),
-                          ),
-                        ],
-                      )
-                    : Stack(
-                        children: [
-                          Image.file(
-                            _image,
-                            width: 240,
-                            height: 340,
-                            fit: BoxFit.cover,
-                          ),
-                          IconButton(
-                              icon: Icon(
-                                Icons.close,
-                                color: ColorService().getPrimaryColor(),
-                              ),
+                SizedBox(height: 20.0),
+                DropDownFormField(
+                    hintText: 'Category',
+                    validator: (val) {
+                      if (val == null || val == '') {
+                        return "Select a category";
+                      } else {
+                        return null;
+                      }
+                    },
+                    value: category,
+                    onSaved: (value) {
+                      setState(() {
+                        category = value;
+                      });
+                    },
+                    onChanged: (value) {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                      setState(() {
+                        category = value;
+                      });
+                    },
+                    dataSource: BookCategories.values),
+                SizedBox(height: 20.0),
+                Center(
+                  child: _image == null
+                      ? Column(
+                          children: [
+                            RaisedButton(
                               onPressed: () {
-                                setState(() => _image = null);
-                              }),
-                        ],
-                      ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 50.0),
-                child: SizedBox(
-                  width: size.width,
-                  child: RaisedButton(
-                      child: Text(
-                        "Add Book".toUpperCase(),
-                        style: Theme.of(context).textTheme.headline6.copyWith(
-                            color: ColorService().getLightTextColor()),
-                      ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)),
-                      onPressed: () async {
-                        if (_image == null) {
-                          setState(() =>
-                              imageError = "Upload or select a book cover");
-                        }
-                        if (_formKey.currentState.validate() &&
-                            _image != null &&
-                            !uploadInProgress) {
-                          uploadInProgress = true;
-                          String defaultImageUrl =
-                              "https://source.unsplash.com/random/800x600";
-
-                          Book addBook = new Book(
-                              author: author,
-                              title: title,
-                              category: category,
-                              description: description,
-                              imageUrl: defaultImageUrl);
-
-                          dynamic result = await _db.addBook(
-                              Provider.of<User>(context, listen: false),
-                              addBook,
-                              _image);
-                          uploadInProgress = false;
-                          if (result == null) {
-                            setState(() => error =
-                                "Could not add the book. Please try again");
-                          } else {
-                            Fluttertoast.showToast(
-                                msg: "Added to your read list",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 3,
-                                backgroundColor: Theme.of(context).primaryColor,
-                                textColor: Colors.white,
-                                fontSize: 20.0);
-                            Navigator.pop(context);
-                          }
-                        }
-                      }),
+                                getImage(false, size);
+                              },
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50)),
+                              child: Text(
+                                "Upload from Camera",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    .copyWith(
+                                      color: ColorService().getLightTextColor(),
+                                    ),
+                              ),
+                            ),
+                            Text(
+                              "or",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            RaisedButton(
+                              onPressed: () {
+                                getImage(true, size);
+                              },
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50)),
+                              child: Text(
+                                "Upload from Gallery",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    .copyWith(
+                                      color: ColorService().getLightTextColor(),
+                                    ),
+                              ),
+                            ),
+                            Text(
+                              imageError,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(color: Colors.red),
+                            ),
+                          ],
+                        )
+                      : Stack(
+                          children: [
+                            Image.file(
+                              _image,
+                              height: size.height / 3.5,
+                              width: (size.height / 2.7) * 0.75,
+                              fit: BoxFit.cover,
+                            ),
+                            IconButton(
+                                icon: Icon(
+                                  Icons.close,
+                                  color: ColorService().getPrimaryColor(),
+                                ),
+                                onPressed: () {
+                                  setState(() => _image = null);
+                                }),
+                          ],
+                        ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                child: Center(
-                  child: Text(
-                    error,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2
-                        .copyWith(color: Colors.red),
-                    textAlign: TextAlign.center,
+                Container(
+                  margin: EdgeInsets.only(top: 50.0),
+                  child: SizedBox(
+                    width: size.width,
+                    child: RaisedButton(
+                        child: Text(
+                          "Add Book".toUpperCase(),
+                          style: Theme.of(context).textTheme.headline6.copyWith(
+                              color: ColorService().getLightTextColor()),
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)),
+                        onPressed: () async {
+                          if (_image == null) {
+                            setState(() =>
+                                imageError = "Upload or select a book cover");
+                          }
+                          if (_formKey.currentState.validate() &&
+                              _image != null &&
+                              !uploadInProgress) {
+                            uploadInProgress = true;
+                            String defaultImageUrl =
+                                "https://source.unsplash.com/random/800x600";
+
+                            Book addBook = new Book(
+                                author: author,
+                                title: title,
+                                category: category,
+                                description: description,
+                                imageUrl: defaultImageUrl);
+
+                            dynamic result = await _db.addBook(
+                                Provider.of<User>(context, listen: false),
+                                addBook,
+                                _image);
+                            uploadInProgress = false;
+                            if (result == null) {
+                              setState(() => error =
+                                  "Could not add the book. Please try again");
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: "Added to your read list",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 3,
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  textColor: Colors.white,
+                                  fontSize: 20.0);
+                              Navigator.pop(context);
+                            }
+                          }
+                        }),
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Center(
+                    child: Text(
+                      error,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          .copyWith(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

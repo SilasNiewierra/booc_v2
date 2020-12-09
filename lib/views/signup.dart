@@ -154,7 +154,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: RaisedButton(
                       color: Theme.of(context).backgroundColor,
                       child: Text(
-                        "Oops... I already have an account".toUpperCase(),
+                        "I already have an account".toUpperCase(),
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       padding:

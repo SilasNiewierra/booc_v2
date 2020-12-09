@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: snapshot.data.length > 0
                               ? GridView.count(
                                   crossAxisCount: 2,
-                                  childAspectRatio: (240 / 390),
+                                  childAspectRatio: 0.61,
                                   crossAxisSpacing: 10,
                                   mainAxisSpacing: 5,
                                   children: List.generate(

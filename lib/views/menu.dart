@@ -22,8 +22,8 @@ class MenuScreen extends StatelessWidget {
                 width: 50,
                 margin: EdgeInsets.symmetric(vertical: 10.0),
               ),
-              GestureDetector(
-                onTap: () {
+              FlatButton(
+                onPressed: () {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -31,23 +31,33 @@ class MenuScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: Text("Analytics",
-                    style: Theme.of(context).textTheme.headline5),
+                child: Text(
+                  "Analytics",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline5
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
               ),
               Container(
                 height: 2.0,
                 width: 50,
                 color: Theme.of(context).primaryColor,
-                margin: EdgeInsets.symmetric(vertical: 10.0),
+                margin: EdgeInsets.symmetric(vertical: 5.0),
               ),
-              GestureDetector(
-                onTap: () async {
+              FlatButton(
+                onPressed: () async {
                   Navigator.of(context).pop();
                   await _authService.signOut();
                 },
-                child: Text("Logout",
-                    style: Theme.of(context).textTheme.headline5),
-              )
+                child: Text(
+                  "Logout",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline5
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
             ],
           ),
         ),

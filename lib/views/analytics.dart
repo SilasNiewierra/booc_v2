@@ -73,8 +73,9 @@ class AnalyticsScreen extends StatelessWidget {
   Widget _buildAnalytics(charts.Series<ChartSegment, String> chart, Size size,
       BuildContext context) {
     List<charts.Series<ChartSegment, String>> list = [chart];
-    return Container(
-      height: size.height / 1.2,
+    return Expanded(
+      // height: size.height / 1.5,
+      // color: Colors.green,
       child: Stack(
         children: [
           Center(

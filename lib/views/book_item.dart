@@ -13,6 +13,7 @@ class BookItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -24,6 +25,8 @@ class BookItem extends StatelessWidget {
                     )));
       },
       child: Container(
+        height: size.height / 2.7,
+        width: (size.height / 2.7) * 0.75,
         child: Column(
           children: [
             ClipRRect(
@@ -32,8 +35,8 @@ class BookItem extends StatelessWidget {
                 tag: book.uId,
                 child: Image.network(
                   book.imageUrl,
-                  height: 340,
-                  width: 240,
+                  height: size.height / 3.5,
+                  width: (size.height / 2.7) * 0.75,
                   fit: BoxFit.fill,
                 ),
               ),
