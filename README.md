@@ -1,16 +1,25 @@
 # booc
 
-A new Flutter project.
+### Your reading history in one place.
 
-## Getting Started
+![Image of book widgets](./assets/github/detail-screens.png)
 
-This project is a starting point for a Flutter application.
+## About booc
+booc is a simple manager. It isn't a book store or e-book app. It allows you to save and remember which books you've already red, which ones you liked and also allows you to save books in your personal bucket list.
+As additional feature, it shows a visual analysis of your read books and their respective book categories.
 
-A few resources to get you started if this is your first Flutter project:
+## Test It
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- Download this project.
+- Create a Firebase Project and add connect it to the app. [Setup and connect Flutter and Firebase](https://firebase.google.com/docs/flutter/setup?platform=android) 
+- Run ``` flutter build apk ```
+- Go to build/app/outputs/flutter-apk/
+- Copy the app-release.apk to your Android Device
+- On your Android Device, install the .apk
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Next Steps
+
+- Add Google Books API
+- Recommendations based on reading history
+- Share, Recommend books to friends
+
