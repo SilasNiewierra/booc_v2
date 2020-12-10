@@ -66,9 +66,9 @@ class _BucketScreenState extends State<BucketScreen> {
                             children: List.generate(
                               snapshot.data.length,
                               (index) => BookItem(
-                                book: snapshot.data[index],
-                                pageContext: PageContext.bucket,
-                              ),
+                                  book: snapshot.data[index],
+                                  pageContext: PageContext.bucket,
+                                  db: _db),
                             ),
                           )
                         : Center(

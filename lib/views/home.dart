@@ -106,6 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     (index) => BookItem(
                                       book: snapshot.data[index],
                                       pageContext: PageContext.read,
+                                      db: _db,
                                     ),
                                   ),
                                 )

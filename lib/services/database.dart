@@ -171,6 +171,40 @@ class DatabaseService {
     }
   }
 
+  // Move a book from read to general for test purposes !!! IMPORTANT  ( later just delete the book)
+  Future deleteBucketBook(User user, Book book) async {
+    try {
+      dynamic downloadResult = await _db
+          .collection('bucket_books')
+          .doc(user.uid)
+          .collection('books')
+          .doc(book.uId)
+          .get()
+          .then((data) async {
+        if (data != null) {
+          print(data);
+          dynamic uploadResult = await _db
+              .collection('general_books')
+              .doc(user.uid)
+              .collection('books')
+              .add(data.data());
+          if (uploadResult != null) {
+            data.reference.delete();
+            return uploadResult;
+          } else {
+            return null;
+          }
+        } else {
+          print("data is empty");
+        }
+      });
+      return downloadResult;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   // Create keywords for search
   List<String> createKeywords(String keywordString) {
     keywordString = keywordString.toLowerCase();

@@ -136,16 +136,16 @@ class _DetailScreenState extends State<DetailScreen> {
                       .headline6
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
-                IconButton(
-                  icon: Icon(
-                    Icons.favorite_border,
-                    color: Theme.of(context).accentColor,
-                    size: 35.0,
-                  ),
-                  onPressed: () {
-                    // widget.bookItem.updateLiked(!like);
-                  },
-                ),
+                // IconButton(
+                //   icon: Icon(
+                //     Icons.favorite_border,
+                //     color: Theme.of(context).accentColor,
+                //     size: 35.0,
+                //   ),
+                //   onPressed: () {
+                //     // widget.bookItem.updateLiked(!like);
+                //   },
+                // ),
               ],
             ),
             // Bottom Buttons
@@ -153,55 +153,99 @@ class _DetailScreenState extends State<DetailScreen> {
               margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
               child: SizedBox(
                 width: size.width,
-                child: RaisedButton(
-                    color: Theme.of(context).backgroundColor,
-                    child: Text(
-                      widget.pageContext == PageContext.read
-                          ? "I haven't read that book".toUpperCase()
-                          : "I have read that book".toUpperCase(),
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        side: BorderSide(
-                            color: Theme.of(context).primaryColor, width: 3.0)),
-                    onPressed: () async {
-                      // remove book from read list
-                      if (widget.pageContext == PageContext.read) {
-                        dynamic result = await _db.deleteReadBook(
-                            Provider.of<User>(context, listen: false),
-                            widget.bookItem);
-                        if (result != null) {
-                          Fluttertoast.showToast(
-                              msg: "Removed from your read list",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 3,
-                              backgroundColor: Theme.of(context).primaryColor,
-                              textColor: Colors.white,
-                              fontSize: 20.0);
-                          Navigator.pop(context);
-                        }
-                      }
-                      // add book to read list and if bucketed remove from bucket list
-                      else {
-                        dynamic result = await _db.connectReadBook(
-                            Provider.of<User>(context, listen: false),
-                            widget.bookItem);
-                        if (result != null) {
-                          Fluttertoast.showToast(
-                              msg: "Added to your read list",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 3,
-                              backgroundColor: Theme.of(context).primaryColor,
-                              textColor: Colors.white,
-                              fontSize: 20.0);
-                          Navigator.pop(context);
-                        }
-                      }
-                    }),
+                child: Column(
+                  children: [
+                    RaisedButton(
+                        color: Theme.of(context).backgroundColor,
+                        child: Text(
+                          widget.pageContext == PageContext.read
+                              ? "I haven't read that book".toUpperCase()
+                              : "I have read that book".toUpperCase(),
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                            side: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                                width: 3.0)),
+                        onPressed: () async {
+                          // remove book from read list
+                          if (widget.pageContext == PageContext.read) {
+                            dynamic result = await _db.deleteReadBook(
+                                Provider.of<User>(context, listen: false),
+                                widget.bookItem);
+                            if (result != null) {
+                              Fluttertoast.showToast(
+                                  msg: "Removed from your read list",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 3,
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  textColor: Colors.white,
+                                  fontSize: 20.0);
+                              Navigator.pop(context);
+                            }
+                          }
+                          // add book to read list and if bucketed remove from bucket list
+                          else {
+                            dynamic result = await _db.connectReadBook(
+                                Provider.of<User>(context, listen: false),
+                                widget.bookItem);
+                            if (result != null) {
+                              Fluttertoast.showToast(
+                                  msg: "Added to your read list",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 3,
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  textColor: Colors.white,
+                                  fontSize: 20.0);
+                              Navigator.pop(context);
+                            }
+                          }
+                        }),
+                    if (widget.pageContext == PageContext.bucket) ...[
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      RaisedButton(
+                          color: Theme.of(context).backgroundColor,
+                          child: Text(
+                            "Remove this book".toUpperCase(),
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 20),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              side: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 3.0)),
+                          onPressed: () async {
+                            // remove book from read list
+                            dynamic result = await _db.deleteBucketBook(
+                                Provider.of<User>(context, listen: false),
+                                widget.bookItem);
+                            if (result != null) {
+                              Fluttertoast.showToast(
+                                  msg: "Removed from your bucket list",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 3,
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  textColor: Colors.white,
+                                  fontSize: 20.0);
+                              Navigator.pop(context);
+                            }
+                          }),
+                    ]
+                  ],
+                ),
               ),
             ),
           ],
