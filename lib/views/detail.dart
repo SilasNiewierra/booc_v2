@@ -22,9 +22,14 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final ColorService colorService =
+        Provider.of<ColorService>(context, listen: false);
+
     return Scaffold(
-      backgroundColor: Theme.of(context).accentColor,
-      appBar: _buildAppBar(),
+      backgroundColor: colorService.colorPaletteMap.isNotEmpty
+          ? colorService.colorPaletteMap[widget.bookItem.uId].color
+          : Theme.of(context).accentColor,
+      appBar: _buildAppBar(colorService),
       body: SingleChildScrollView(
           child: ConstrainedBox(
         constraints: BoxConstraints(minHeight: size.height),
@@ -44,19 +49,20 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Widget _buildAppBar() {
+  Widget _buildAppBar(ColorService colorService) {
     return AppBar(
-      elevation: 0,
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back,
-          color: ColorService().getLightTextColor(),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: ColorService().getLightTextColor(),
+          ),
+          onPressed: () => Navigator.pop(context),
         ),
-        onPressed: () => Navigator.pop(context),
-      ),
-      actions: [],
-      backgroundColor: Theme.of(context).accentColor,
-    );
+        actions: [],
+        backgroundColor: colorService.colorPaletteMap.isNotEmpty
+            ? Colors.transparent
+            : Theme.of(context).accentColor);
   }
 
   Widget _buildHeading() {

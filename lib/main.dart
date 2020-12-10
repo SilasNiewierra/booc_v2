@@ -37,6 +37,8 @@ class MyApp extends StatelessWidget {
               StreamProvider<User>.value(value: AuthenticationService().user),
               ChangeNotifierProvider<AnalyticsModel>(
                   create: (context) => AnalyticsModel()),
+              ChangeNotifierProvider<ColorService>(
+                  create: (context) => ColorService())
             ],
 
             // All data will be available in this child and descendents
