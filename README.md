@@ -8,6 +8,8 @@
 booc is a simple manager. It isn't a book store or e-book app. It allows you to save and remember which books you've already red, which ones you liked and also allows you to save books in your personal bucket list.
 As additional feature, it shows a visual analysis of your read books and their respective book categories.
 
+Using Googles Firebase Authentication enables users to Sign Up, Sign In and Sign Out. Books are stored in Firestore and Book cover images are stored in Firebase Storage.
+
 ## Test It
 
 - Download this project.
